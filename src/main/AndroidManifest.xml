@@ -3,6 +3,12 @@
     package="com.example.stengel.MapApp2017">
 
     <!--
+         The android.permission.INTERNET permissions are used to gain access
+         to Tomcat Server for use in this application.
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 

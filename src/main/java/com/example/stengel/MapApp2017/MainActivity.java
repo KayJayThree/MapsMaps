@@ -9,11 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 
 public class MainActivity extends AppCompatActivity implements
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int LOCATION_PERMISSION_CODE = 42;
 
     private String m_sLocation = "";
+    String msg = "---De_bugged : ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,24 @@ public class MainActivity extends AppCompatActivity implements
     // ##### Add method for add to my location button's click method and call getLastKnownLocation() #####
     // ###################################################################################################
     public void btnAddMyPlace_OnClick(View oView){
+
+        //checkbox
+        if(((CheckBox)findViewById(R.id.chkCloudPush)).isChecked()){
+            WebServiceClient oWSClient;
+            oWSClient = new WebServiceClient(getBaseContext());
+
+            String sWebserviceURL = "http://10.0.2.2:8080/myplacescloud/MyPlacesCloudService?" +
+                    "title=" + ((EditText)findViewById(R.id.txtEdName)).getText() +
+                    "&lat=102" +
+                    "&lon=32";
+
+            oWSClient.execute(sWebserviceURL);
+
+        }
+
+
         getLastKnownLocation();
-        Toast.makeText(this, "Clicked btnAddMyPlace_OnClick & called getLastKnownLocation()", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Called getLastKnownLocation()", Toast.LENGTH_LONG).show();
     }
 
     // ###################################################################################
@@ -117,10 +136,33 @@ public class MainActivity extends AppCompatActivity implements
             String sLocation = "lat: " + String.valueOf(mLastLocation.getLatitude()) +
                     " --- lon: " + String.valueOf(mLastLocation.getLongitude());
             Log.d("---", "Location: " + sLocation);
+
             Toast.makeText(this, "Location: " + sLocation, Toast.LENGTH_LONG).show();
             m_sLocation = sLocation;
 
-            // ##### Add code here to write location to database #####
+            /////////////////////////////////////////////////////////////////////////// TEST LOG
+            /////////// Below gets the value of EdTextBox (Name) on Activity //////////
+            String m_txtEdName = String.valueOf(findViewById(R.id.txtEdName).toString());
+            Log.d("---", "----------------------------");
+            // Log.d("---", "NAME: " + String.valueOf(m_txtEdName));
+            Log.d("---", String.valueOf(findViewById(R.id.txtName)));
+            Log.d("---", String.valueOf(findViewById(R.id.txtEdName)));
+            Log.d("---", " LAT: " + String.valueOf(mLastLocation.getLatitude()));
+            Log.d("---", " LON: " + String.valueOf(mLastLocation.getLongitude()));
+
+            // WORKING: puts current location of Latitude in textBox on screen
+            TextView txtLat = (TextView) findViewById(R.id.txtLat);
+            txtLat.setText(String.valueOf(mLastLocation.getLatitude()));
+
+            // WORKING: puts current Longitude of Lat in textBox on screen
+            TextView txtLon = (TextView) findViewById(R.id.txtLon);
+            txtLon.setText(String.valueOf(mLastLocation.getLongitude()));
+
+            /////////////////////////////////////////////////////////////////////////// TEST LOG
+
+             // ##### Add code here to write location to database ############################
+            // ##### Add code here to write location to database ############################
+
 
 
 
@@ -171,9 +213,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-
-
     @Override
     public void onConnectionSuspended(int i) {
         Toast.makeText(this, "---suspendend: " + i, Toast.LENGTH_LONG).show();
@@ -185,4 +224,37 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(this, "---Failed: " + connectionResult.getErrorMessage(), Toast.LENGTH_LONG).show();
 
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    /** Called when the activity has become visible. */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(msg, "The onResume() event");
+    }
+
+    /** Called when another activity is taking focus. */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(msg, "The onPause() event");
+    }
+
+    /*// Called when the activity is no longer visible.
+    // Called already this is duplicate.
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(msg, "The onStop() event");
+    }*/
+
+
+    /** Called just before the activity is destroyed. */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(msg, "The onDestroy() event");
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
 }

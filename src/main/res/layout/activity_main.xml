@@ -11,20 +11,102 @@
     tools:context="com.example.stengel.MapApp2017.MainActivity">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stengel Maps!"
-        android:id="@+id/textView" />
+        android:textStyle="bold" />
 
     <Button
-        android:text="Press to Update Location"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:id="@+id/button2"
+        android:layout_marginTop="14dp"
         android:onClick="btnAddMyPlace_OnClick"
+        android:text="Press to Update"
+        android:layout_below="@+id/chkCloudPush"
+        android:layout_alignStart="@+id/txtName" />
+
+    <EditText
+        android:id="@+id/txtEdName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtName"
+        android:layout_marginBottom="25dp"
+        android:layout_toEndOf="@+id/textView"
+        android:ems="10"
+        android:hint="San Diego"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="93dp"
+        android:text="Enter a location name:"
+        android:textStyle="bold"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/txtEdName" />
+
+    <TextView
+        android:id="@+id/textLongitude"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button2"
+        android:layout_marginTop="86dp"
+        android:text="Longitude "
+        android:textAlignment="textEnd"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textLatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textLongitude"
+        android:layout_alignEnd="@+id/textLongitude"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="24dp"
+        android:text="Latitude "
+        android:textAlignment="textEnd"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtLon"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textLongitude"
+        android:layout_alignBottom="@+id/textLongitude"
+        android:layout_alignStart="@+id/txtLat" />
+
+    <TextView
+        android:id="@+id/txtLat"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textLatitude"
+        android:layout_alignBottom="@+id/textLatitude"
+        android:layout_toEndOf="@+id/textLatitude" />
+
+    <CheckedTextView
+        android:id="@+id/checkedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
+        android:text="CheckedTextView"
+        android:layout_alignParentBottom="true" />
+
+    <CheckBox
+        android:id="@+id/chkCloudPush"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button2"
+        android:layout_below="@+id/txtEdName"
+        android:layout_marginTop="11dp"
+        android:checked="false"
+        android:text="Push to Cloud"
+        android:textSize="12sp" />
     <!-- VCS Commit Changes  -->
 
 </RelativeLayout>

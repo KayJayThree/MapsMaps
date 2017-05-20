@@ -1,5 +1,6 @@
 package com.example.stengel.MapApp2017;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final int LOCATION_PERMISSION_CODE = 42;
 
     private String m_sLocation = "";
-    String msg = "---De_bugged : ";
+    String msg = "---De_bug: ";
+    String baseURL = "http://10.0.2.2:8080/myplacescloud/MyPlacesCloudService?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +50,45 @@ public class MainActivity extends AppCompatActivity implements
     // ###################################################################################################
     public void btnAddMyPlace_OnClick(View oView){
 
-        //checkbox
+
+        getLastKnownLocation();
+
+
+        // If the checkbox is selected we will:
+        //  -- send information to remote server (Tomcat)
         if(((CheckBox)findViewById(R.id.chkCloudPush)).isChecked()){
             WebServiceClient oWSClient;
             oWSClient = new WebServiceClient(getBaseContext());
 
-            String sWebserviceURL = "http://10.0.2.2:8080/myplacescloud/MyPlacesCloudService?" +
+            String sWebserviceURL = baseURL +
                     "title=" + ((EditText)findViewById(R.id.txtEdName)).getText() +
-                    "&lat=102" +
-                    "&lon=32";
+                    "&lat="  + ((TextView) findViewById(R.id.txtLat)).getText() +
+                    "&lon="  + ((TextView) findViewById(R.id.txtLon)).getText();
+
+            //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
+            //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
+            Log.d(msg, "sWebserviceURL: " + sWebserviceURL.replaceAll(" ","%20"));
+            Log.d(msg, "findViewById(R.id.txtLat): " + ((TextView) findViewById(R.id.txtLat)).getText());
+            Log.d(msg, "findViewById(R.id.txtLon): " + ((TextView) findViewById(R.id.txtLon)).getText());
+            Toast.makeText(this, sWebserviceURL, Toast.LENGTH_LONG).show();
+            //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
+            //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
+
 
             oWSClient.execute(sWebserviceURL);
-
         }
 
+        //getLastKnownLocation();
+        //Toast.makeText(this, "Called getLastKnownLocation()", Toast.LENGTH_LONG).show();
 
-        getLastKnownLocation();
-        Toast.makeText(this, "Called getLastKnownLocation()", Toast.LENGTH_LONG).show();
+
+
+
     }
 
     // ###################################################################################
     // ##### Add method for View Map button's click method and send to maps activity #####
     // ###################################################################################
-
 
 
 
@@ -101,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         else {
             Log.d("----","Got permission.");
-            Toast.makeText(this, "GOT PERMISSION!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "GOT PERMISSION!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -123,12 +141,13 @@ public class MainActivity extends AppCompatActivity implements
         Location mLastLocation = null;
         try {
             Log.d("---", "calling getLastLocation on FusedLocationApi.");
-            Toast.makeText(this, "calling getLastLocation on FusedLocationApi()!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "calling getLastLocation on FusedLocationApi()!", Toast.LENGTH_SHORT).show();
 
             // *** Call FusedLocationApi method to get last location.
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     m_oGoogleApiClient);
         } catch (SecurityException ex) {
+            // If failure, ex (Exception) will display to Log and Toast
             Log.d("---", ex.getMessage());
             Toast.makeText(this, "ex.getMessage()", Toast.LENGTH_SHORT).show();
         }
@@ -141,20 +160,16 @@ public class MainActivity extends AppCompatActivity implements
             m_sLocation = sLocation;
 
             /////////////////////////////////////////////////////////////////////////// TEST LOG
-            /////////// Below gets the value of EdTextBox (Name) on Activity //////////
-            String m_txtEdName = String.valueOf(findViewById(R.id.txtEdName).toString());
-            Log.d("---", "----------------------------");
-            // Log.d("---", "NAME: " + String.valueOf(m_txtEdName));
-            Log.d("---", String.valueOf(findViewById(R.id.txtName)));
-            Log.d("---", String.valueOf(findViewById(R.id.txtEdName)));
+            Log.d("---", "NAME1: " + ((EditText) findViewById(R.id.txtEdName)).getText());
             Log.d("---", " LAT: " + String.valueOf(mLastLocation.getLatitude()));
             Log.d("---", " LON: " + String.valueOf(mLastLocation.getLongitude()));
+
 
             // WORKING: puts current location of Latitude in textBox on screen
             TextView txtLat = (TextView) findViewById(R.id.txtLat);
             txtLat.setText(String.valueOf(mLastLocation.getLatitude()));
 
-            // WORKING: puts current Longitude of Lat in textBox on screen
+            // WORKING: puts current location of Longitude in textBox on screen
             TextView txtLon = (TextView) findViewById(R.id.txtLon);
             txtLon.setText(String.valueOf(mLastLocation.getLongitude()));
 
@@ -163,7 +178,20 @@ public class MainActivity extends AppCompatActivity implements
              // ##### Add code here to write location to database ############################
             // ##### Add code here to write location to database ############################
 
+            // Insert information into database
+            DBManager oDBManager = new DBManager(this);
 
+            // Open database for writing
+            oDBManager.open();
+            // Set local variables to Title and location for inserting below
+            TextView m_txtTitle = (TextView)findViewById(R.id.txtEdName);
+                //TextView m_txtLat = (TextView)findViewById(R.id.txtLat);
+                //TextView m_txtLon = (TextView)findViewById(R.id.txtLon);
+            // call insertLocation in DBManager to put the entries in db
+            oDBManager.insertLocation(m_txtTitle.getText().toString(), txtLat.getText().toString(),  txtLon.getText().toString());
+            Log.d(msg, "TITLE::" + m_txtTitle.getText().toString() + "LAT::" +txtLat.getText().toString() +  "LON:" + txtLon.getText().toString());
+            // Close the database after opening above
+            oDBManager.close();
 
 
         }
@@ -255,6 +283,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onDestroy() {
         super.onDestroy();
         Log.d(msg, "The onDestroy() event");
+    }
+
+    public void btnShowMap_OnClick(View view) {
+        startActivity(new Intent("com.example.stengel.MapApp2017.MapsActivity"));
+        Toast.makeText(this, "SECOND ACTIVITY STARTED",Toast.LENGTH_LONG).show();
+        Log.d(msg, "SECOND ACTIVITY STARTED");
     }
     ////////////////////////////////////////////////////////////////////////////////////////
 }

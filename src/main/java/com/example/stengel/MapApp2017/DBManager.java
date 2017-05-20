@@ -1,6 +1,8 @@
 package com.example.stengel.MapApp2017;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -53,4 +55,46 @@ public class DBManager {
             onCreate(db);
         }
     }
+
+    //---opens the database--- for writing data
+    public DBManager open() throws SQLException
+    {
+        db = DBHelper.getWritableDatabase();
+        return this;
+    }
+
+    // Open for reading data
+    public DBManager openRead() throws SQLException
+    {
+        db = DBHelper.getReadableDatabase();
+        return this;
+    }
+
+    //---closes the database---
+    public void close()
+    {
+        DBHelper.close();
+    }
+
+    //---insert a location into the database---
+    public long insertLocation(String title, String lat, String lon)
+    {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(KEY_TITLE, title);
+        initialValues.put(KEY_LAT, lat);
+        initialValues.put(KEY_LON, lon);
+        return db.insert(DATABASE_TABLE, null, initialValues);
+    }
+    public Cursor getAllLocations()
+    {
+        // Get all information and return in a cursor
+        return db.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TITLE, KEY_LAT, KEY_LON}, null, null, null, null, null);
+    }
+
+    /*//method for select query
+    public Cursor display() {
+        SQLiteDatabase db = DBHelper.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from " + maps, null);
+        return res;
+    }*/
 }

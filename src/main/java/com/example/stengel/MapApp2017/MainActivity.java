@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
         public void DisplayFirstRow(Cursor rowCursor) {
             Toast.makeText(this,
                 "id: " + rowCursor.getString(0) + "\n" +
@@ -106,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.LENGTH_LONG).show();
         }
 
-
-
     // ###################################################################################
     // ##### Add method for View Map button's click method and send to maps activity #####
     // ###################################################################################
+
+
 
 
     protected void onStart() {
@@ -122,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements
         m_oGoogleApiClient.disconnect();
         super.onStop();
     }
-
 
 
     @Override

@@ -2,6 +2,7 @@ package com.example.stengel.MapApp2017;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements
     // ###################################################################################################
     // ##### Add method for add to my location button's click method and call getLastKnownLocation() #####
     // ###################################################################################################
-    public void btnAddMyPlace_OnClick(View oView){
+    public void btnAddMyPlace_OnClick(View oView) {
 
 
         getLastKnownLocation();
@@ -56,18 +57,18 @@ public class MainActivity extends AppCompatActivity implements
 
         // If the checkbox is selected we will:
         //  -- send information to remote server (Tomcat)
-        if(((CheckBox)findViewById(R.id.chkCloudPush)).isChecked()){
+        if (((CheckBox) findViewById(R.id.chkCloudPush)).isChecked()) {
             WebServiceClient oWSClient;
             oWSClient = new WebServiceClient(getBaseContext());
 
             String sWebserviceURL = baseURL +
-                    "title=" + ((EditText)findViewById(R.id.txtEdName)).getText() +
-                    "&lat="  + ((TextView) findViewById(R.id.txtLat)).getText() +
-                    "&lon="  + ((TextView) findViewById(R.id.txtLon)).getText();
+                    "title=" + ((EditText) findViewById(R.id.txtEdName)).getText() +
+                    "&lat=" + ((TextView) findViewById(R.id.txtLat)).getText() +
+                    "&lon=" + ((TextView) findViewById(R.id.txtLon)).getText();
 
             //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
             //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //    //  DEBUG  //
-            Log.d(msg, "sWebserviceURL: " + sWebserviceURL.replaceAll(" ","%20"));
+            Log.d(msg, "sWebserviceURL: " + sWebserviceURL.replaceAll(" ", "%20"));
             Log.d(msg, "findViewById(R.id.txtLat): " + ((TextView) findViewById(R.id.txtLat)).getText());
             Log.d(msg, "findViewById(R.id.txtLon): " + ((TextView) findViewById(R.id.txtLon)).getText());
             Toast.makeText(this, sWebserviceURL, Toast.LENGTH_LONG).show();
@@ -76,20 +77,40 @@ public class MainActivity extends AppCompatActivity implements
 
 
             oWSClient.execute(sWebserviceURL);
+
+            ////////////////////////////////////////////////////////////
+            // TEST ONE SINGLE READ AND PRINT TO TOAST
+            DBManager oDBManager = new DBManager(this);
+            // Open database for reading
+            Cursor rowCursor = oDBManager.getLocation(0);
+            //string array of all cities
+            if (rowCursor.moveToFirst())
+                oDBManager.open();
+            {
+                do {
+                    DisplayFirstRow(rowCursor);
+                }
+                while (rowCursor.moveToNext());
+            }
+            oDBManager.close();
+        }
+    }
+
+
+        public void DisplayFirstRow(Cursor rowCursor) {
+            Toast.makeText(this,
+                "id: " + rowCursor.getString(0) + "\n" +
+                        "Title: " + rowCursor.getString(1) + "\n" +
+                        "Latitude: " + rowCursor.getString(2) + "\n" +
+                        "Longitude:  " + rowCursor.getString(3),
+                Toast.LENGTH_LONG).show();
         }
 
-        //getLastKnownLocation();
-        //Toast.makeText(this, "Called getLastKnownLocation()", Toast.LENGTH_LONG).show();
 
-
-
-
-    }
 
     // ###################################################################################
     // ##### Add method for View Map button's click method and send to maps activity #####
     // ###################################################################################
-
 
 
     protected void onStart() {
@@ -159,10 +180,13 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(this, "Location: " + sLocation, Toast.LENGTH_LONG).show();
             m_sLocation = sLocation;
 
-            /////////////////////////////////////////////////////////////////////////// TEST LOG
+            // TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG
+            // TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG
             Log.d("---", "NAME1: " + ((EditText) findViewById(R.id.txtEdName)).getText());
             Log.d("---", " LAT: " + String.valueOf(mLastLocation.getLatitude()));
             Log.d("---", " LON: " + String.valueOf(mLastLocation.getLongitude()));
+            // TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG
+            // TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG//TEST LOG
 
 
             // WORKING: puts current location of Latitude in textBox on screen
@@ -290,10 +314,11 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(msg, "The onDestroy() event");
     }
 
-    public void btnShowMap_OnClick(View view) {
+    public void btnShowMap_OnClick(View view){
         startActivity(new Intent("com.example.stengel.MapApp2017.MapsActivity"));
         Toast.makeText(this, "SECOND ACTIVITY STARTED",Toast.LENGTH_LONG).show();
         Log.d(msg, "SECOND ACTIVITY STARTED");
     }
     ////////////////////////////////////////////////////////////////////////////////////////
+
 }

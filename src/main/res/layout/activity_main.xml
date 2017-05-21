@@ -151,6 +151,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textLongitude" />
 
+    <Button
+        android:id="@+id/btnShowFirst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:onClick="btnShowFirstRow_OnClick"
+        android:text="Show First"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnShowMap"
+        tools:layout_editor_absoluteY="383dp" />
+
     <!-- VCS Commit Changes  -->
 
 </android.support.constraint.ConstraintLayout>

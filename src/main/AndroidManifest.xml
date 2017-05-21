@@ -44,8 +44,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="com.example.stengel.MapApp2017.MapsActivity"
+        <activity android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
+            <intent-filter >
+                <action android:name="com.example.stengel.MapApp2017.MapsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

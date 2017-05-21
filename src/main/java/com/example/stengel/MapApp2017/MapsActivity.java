@@ -71,13 +71,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //////////////// DO GOOGLE MAPS STUFF /////////////////////////////
                 //string array of all cities
                 if (userCursor.moveToFirst())
-                    oDBManager.openRead();{
+                    oDBManager.open();{
                     do {
                         DisplayLocationMap(userCursor);
                     }
                     while (userCursor.moveToNext());
                     }
-                userCursor.close();
+                oDBManager.close();
     }
     public void DisplayLocationMap(Cursor userCursor){
     Toast.makeText(this,

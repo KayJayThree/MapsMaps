@@ -36,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.clear();
+/*      mMap.clear();
 
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         // googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -58,50 +58,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Enable / Disable zooming functionality
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-
+*/
 
         ////    DATABASE STUFF FOR READING MAPS TABLE
         // Open database for reading cursor
         DBManager oDBManager = new DBManager(this);
         // Open database for reading
-        oDBManager.openRead();
+
         //SQLiteDatabase  db = openOrCreateDatabase("MyDB", SQLiteDatabase.CREATE_IF_NECESSARY, null);
         Cursor userCursor = oDBManager.getAllLocations();
 
-         //////////////// DO GOOGLE MAPS STUFF /////////////////////////////
-        //string array of all cities
-        if (userCursor.moveToFirst())
-        {
-            do {
-                DisplayLocationMap(userCursor);
-            } while (userCursor.moveToNext());
-        }
-        oDBManager.close();
+                //////////////// DO GOOGLE MAPS STUFF /////////////////////////////
+                //string array of all cities
+                if (userCursor.moveToFirst())
+                    oDBManager.openRead();{
+                    do {
+                        DisplayLocationMap(userCursor);
+                    }
+                    while (userCursor.moveToNext());
+                    }
+                userCursor.close();
     }
-        public void DisplayLocationMap(Cursor userCursor)
-        {
-        Toast.makeText(this,
-                "id: " + userCursor.getString(0) + "\n" +
-                        "Title: " + userCursor.getString(1) + "\n" +
-                        "Latitude: " + userCursor.getString(2) + "\n" +
-                        "Longitude:  " + userCursor.getString(3),
-                Toast.LENGTH_LONG).show();
+    public void DisplayLocationMap(Cursor userCursor){
+    Toast.makeText(this,
+        "id: " + userCursor.getString(0) + "\n" +
+        "Title: " + userCursor.getString(1) + "\n" +
+        "Latitude: " + userCursor.getString(2) + "\n" +
+        "Longitude:  " + userCursor.getString(3),
+        Toast.LENGTH_LONG).show();
     }
-        }
+}
 
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
-        /*ArrayList<MarkerData> markerArray = new ArrayList<MarkerData>();
-            for(int i = 0 ; i < oDBCursor.size() ; i++ ) {
-
-            createMarker(markersArray.get(i).getLatitude(), markersArray.get(i).getLongitude(), markersArray.get(i).getTitle(), markersArray.get(i).getSnippet(), markersArray.get(i).getIconResID());
-        }
-*/
 
 
 

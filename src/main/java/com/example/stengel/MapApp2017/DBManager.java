@@ -84,10 +84,12 @@ public class DBManager {
 
     //---retrieves a particular location---
     public Cursor getLocation(long rowId) throws SQLException {
+        //this.open();
         Cursor mCursor = db.query(true, DATABASE_TABLE, new String[]{KEY_ROWID, KEY_TITLE, KEY_LAT, KEY_LON}, KEY_ROWID + "=" + rowId, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
+        //this.close();
         return mCursor;
 
     /*//method for select query

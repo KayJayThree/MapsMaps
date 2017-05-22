@@ -64,8 +64,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Open database for reading cursor
         DBManager oDBManager = new DBManager(this);
         // Open database for reading
-
-        //SQLiteDatabase  db = openOrCreateDatabase("MyDB", SQLiteDatabase.CREATE_IF_NECESSARY, null);
+        
+        oDBManager.open();
         Cursor userCursor = oDBManager.getAllLocations();
 
                 //////////////// DO GOOGLE MAPS STUFF /////////////////////////////

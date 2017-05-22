@@ -78,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements
 
             oWSClient.execute(sWebserviceURL);
 
+/*
             ////////////////////////////////////////////////////////////
+            // TEST ONE SINGLE READ AND PRINT TO TOAST
             // TEST ONE SINGLE READ AND PRINT TO TOAST
             DBManager oDBManager = new DBManager(this);
             // Open database for reading
@@ -93,16 +95,24 @@ public class MainActivity extends AppCompatActivity implements
                 while (rowCursor.moveToNext());
             }
             oDBManager.close();
+            ////////////////////////////////////////////////////////////
+            // END TEST ONE SINGLE READ AND PRINT TO TOAST
+*/
+
         }
     }
 
         public void DisplayFirstRow(Cursor rowCursor) {
-            Toast.makeText(this,
-                "id: " + rowCursor.getString(0) + "\n" +
-                        "Title: " + rowCursor.getString(1) + "\n" +
-                        "Latitude: " + rowCursor.getString(2) + "\n" +
-                        "Longitude:  " + rowCursor.getString(3),
-                Toast.LENGTH_LONG).show();
+            if( rowCursor != null && rowCursor.moveToFirst() ) {
+                Toast.makeText(this,
+                        "id: " + rowCursor.getString(0) + "\n" +
+                                "Title: " + rowCursor.getString(1) + "\n" +
+                                "Latitude: " + rowCursor.getString(2) + "\n" +
+                                "Longitude:  " + rowCursor.getString(3),
+                        Toast.LENGTH_LONG).show();
+            }else {
+                    Toast.makeText(this, "rowCursor is null or !moveToFirst()",Toast.LENGTH_LONG).show();
+            }
         }
 
     // ###################################################################################
@@ -314,9 +324,15 @@ public class MainActivity extends AppCompatActivity implements
 
     public void btnShowMap_OnClick(View view){
         startActivity(new Intent("com.example.stengel.MapApp2017.MapsActivity"));
-        Toast.makeText(this, "SECOND ACTIVITY STARTED",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "SECOND ACTIVITY STARTED",Toast.LENGTH_LONG).show();
         Log.d(msg, "SECOND ACTIVITY STARTED");
     }
     ////////////////////////////////////////////////////////////////////////////////////////
-
+    public void btnShowFirstRow_OnClick(View rView){
+        DBManager oDBManager = new DBManager(this);
+        oDBManager.open();
+        Cursor rowCursor = oDBManager.getLocation(1);
+            DisplayFirstRow(rowCursor);
+        oDBManager.close();
+    }
 }
